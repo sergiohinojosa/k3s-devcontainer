@@ -53,3 +53,5 @@ tfplan
 **/.out
 
 *.DS_Store
+
+*-tmp*
