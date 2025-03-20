@@ -3,20 +3,32 @@
     "service": "k3s-devcontainer",
     "workspaceFolder": "/app",
     "remoteUser": "ubuntu",
+    "postCreateCommand": {
+      "print-message-of-the-day": "bash /app/.devcontainer/etc/k3s/k3s.sh"
+    },
     "postStartCommand": {
       "set-git-config-safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder}",
       "set-git-config-line-endings": "git config --global core.autocrlf input",
       "set-git-config-gpg-program": "git config --global --add gpg.program /usr/bin/gpg",
-      "print-message-of-the-day": "echo \"bash /etc/update-motd.d/00-header\" >> ~/.bashrc"
+      "print-message-of-the-day": "echo \"bash /etc/update-motd.d/00-header\" >> ~/.bashrc",
+      "install-dynatrace": "bash /app/.devcontainer/etc/post-start.sh"
     },
     "postAttachCommand": {
-      "print-message-of-the-day": "bash /etc/update-motd.d/00-header"
-    },
-    "postCreateCommand": {
-      "print-message-of-the-day": "bash /etc/update-motd.d/00-header"
+      "print-message-of-the-day": "echo 'post attach'"
     },
     "forwardPorts": ["localhost:8001"],
     "portsAttributes": {"8001": {"protocol": "https"}},
+    "secrets": {
+      "DT_URL": {
+        "description": "eg. https://abc12345.live.dynatrace.com"
+      },
+      "DT_OPERATOR_TOKEN": {
+        "description": "Dynatrace K8s Operator Token"
+      },
+      "DT_DATAINGEST_TOKEN": {
+        "description": "Data Ingest Token"
+      }
+    },
     "customizations": {
       "vscode": {
         "settings": {

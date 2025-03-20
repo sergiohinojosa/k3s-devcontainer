@@ -12,6 +12,10 @@ kubectl -n todoapp port-forward svc/todoapp 8888:8080 --address="0.0.0.0"
 port-on-localhost:svc-port
 
 
+# Install DT
+helm install dynatrace-operator oci://public.ecr.aws/dynatrace/dynatrace-operator --create-namespace --namespace dynatrace --atomic
+
+
 # Configutration on the k8s-play file
 
 # Setting the environment variables

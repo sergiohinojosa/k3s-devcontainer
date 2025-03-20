@@ -45,5 +45,5 @@ RUN echo "ubuntu:ubuntu" | chpasswd && \
     chmod 440 /etc/sudoers.d/ubuntu
 
 # Run the init daemon
-VOLUME [ "/sys/fs/cgroup" ]
-CMD ["/usr/sbin/init"]
+#VOLUME [ "/sys/fs/cgroup" ]
+#CMD ["/usr/sbin/init"]
