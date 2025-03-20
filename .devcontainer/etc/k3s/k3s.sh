@@ -51,63 +51,14 @@ function k3s-install() {
   printInfoSection "Setting up NGINX Ingress"
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
   
-  # https://helm.sh/docs/intro/install/#from-script
-  printInfoSection " Installing Helm"
-  cd /tmp
-  sudo curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-  sudo chmod 700 get_helm.sh
-  sudo /tmp/get_helm.sh
 
-  # https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/   
-  printInfoSection " Installing Kubernetes dashboard"
-   
-  helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-  helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
-  
+  installHelm
 
-  # In the functions you can specify the amount of retries and the NS
-  waitForAllPods
-  printInfoSection " kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8001:443 --address=\"0.0.0.0\", (${attempts}/${max_attempts}) sleep 10s"
-  kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8001:443 --address="0.0.0.0" > /dev/null 2>&1 &
-  # https://github.com/komodorio/helm-dashboard
-   
-    printInfoSection "Installing Helm Dashboard"
-   
-  helm plugin install https://github.com/komodorio/helm-dashboard.git
+  #installKubernetesDashboard
 
+  #installHelmDashboard
    
-  printInfoSection "Running Helm Dashboard" 
-  helm dashboard --bind=0.0.0.0 --port 8002 --no-browser --no-analytics > /dev/null 2>&1 &
-
-   
-  printInfoSection "Helm version" 
-  helm version
-
-  # https://helm.sh/docs/intro/quickstart/#initialize-a-helm-chart-repository
-  printInfoSection "Helm add Bitnami repo"
-  printInfoSection "helm repo add bitnami https://charts.bitnami.com/bitnami" 
-  helm repo add bitnami https://charts.bitnami.com/bitnami
-
-   
-  printInfoSection "Helm repo update" 
-  helm repo update
-
-   
-  printInfoSection "Helm search repo bitnami"  
-  helm search repo bitnami
-
-   
-  printInfoSection "Installing k8s CLI" 
-  curl -sS https://webinstall.dev/k9s | bash
-
-   
-  printInfoSection "Create ServiceAccount and ClusterRoleBinding" 
-  kubectl apply -f /app/.devcontainer/etc/k3s/dashboard-adminuser.yaml
-  kubectl apply -f /app/.devcontainer/etc/k3s/dashboard-rolebind.yaml
-
-   
-  printInfoSection "Get admin-user token" 
-  kubectl -n kube-system create token admin-user --duration=8760h
+  installK9s
 
   if [[ $CODESPACES == true ]]; then
     KUBERNETES_DASHBOARD_URL="https://${CODESPACE_NAME}-8001.app.github.dev"
